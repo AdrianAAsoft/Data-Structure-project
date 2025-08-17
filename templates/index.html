@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Paradas de Bus - Grafos</title>
+    <script src="/static/script.js" defer></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        .box { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Paradas de Bus - Grafos</h1>
+
+    <div class="box">
+        <h2>Paradas</h2>
+        <button onclick="cargarParadas()">Ver paradas</button>
+        <ul id="lista-paradas"></ul>
+    </div>
+
+    <div class="box">
+        <h2>Conexiones</h2>
+        <button onclick="cargarConexiones()">Ver conexiones</button>
+        <ul id="lista-conexiones"></ul>
+    </div>
+
+    <div class="box">
+        <h2>Calcular ruta</h2>
+        Origen: <input id="ori" type="text">
+        Destino: <input id="des" type="text">
+        <button onclick="calcularRuta()">Calcular</button>
+        <p id="resultado-ruta"></p>
+    </div>
+</body>
+</html>
