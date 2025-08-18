@@ -1,36 +1,65 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Paradas de Bus - Grafos</title>
-    <script src="/static/script.js" defer></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h1 { color: #333; }
-        .box { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Rutas de Bus (Demo)</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}
+    h1{margin:.2rem 0 1rem}
+    .wrap{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .card{border:1px solid #ddd;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+    input,select,button{padding:8px;border-radius:8px;border:1px solid #ccc}
+    .pill{background:#f4f4f4;border-radius:20px;padding:4px 10px;margin:2px;display:inline-block}
+    .muted{color:#666}
+    .ok{color:#0a7;font-weight:700}
+    .err{color:#b00;font-weight:700}
+  </style>
 </head>
 <body>
-    <h1>Paradas de Bus - Grafos</h1>
+  <h1>🚌 Rutas de Bus</h1>
+  <p class="muted">Demo sobre tu API. Todo se guarda/carga a <code>grafo.json</code>.</p>
 
-    <div class="box">
-        <h2>Paradas</h2>
-        <button onclick="cargarParadas()">Ver paradas</button>
-        <ul id="lista-paradas"></ul>
+  <div class="wrap">
+    <div class="card">
+      <h3>Paradas</h3>
+      <div id="paradas"></div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <input id="nueva-parada" placeholder="Nombre"/>
+        <button onclick="agregarParada()">Agregar</button>
+      </div>
     </div>
 
-    <div class="box">
-        <h2>Conexiones</h2>
-        <button onclick="cargarConexiones()">Ver conexiones</button>
-        <ul id="lista-conexiones"></ul>
+    <div class="card">
+      <h3>Conexiones (dirigidas)</h3>
+      <div id="conexiones"></div>
+      <div style="margin-top:8px;display:grid;gap:8px;grid-template-columns:1fr 1fr">
+        <input id="cx-a" placeholder="A"/>
+        <input id="cx-b" placeholder="B"/>
+        <input id="cx-t" placeholder="Tiempo (min)" type="number"/>
+        <label><input id="cx-bidir" type="checkbox" checked/> Bidireccional</label>
+        <button onclick="agregarConexion()">Agregar conexión</button>
+      </div>
     </div>
 
-    <div class="box">
-        <h2>Calcular ruta</h2>
-        Origen: <input id="ori" type="text">
-        Destino: <input id="des" type="text">
-        <button onclick="calcularRuta()">Calcular</button>
-        <p id="resultado-ruta"></p>
+    <div class="card">
+      <h3>Ruta más rápida</h3>
+      <select id="ori"></select>
+      <select id="des"></select>
+      <div style="margin-top:8px"><button onclick="calcularRuta()">Calcular</button></div>
+      <div id="resultado" style="margin-top:8px"></div>
     </div>
+
+    <div class="card">
+      <h3>Guardar / Cargar JSON</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="guardar()">Guardar (grafo.json)</button>
+        <button onclick="cargar()">Cargar (grafo.json)</button>
+      </div>
+      <div id="persist-msg" class="muted" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <script src="/static/main.js"></script>
 </body>
 </html>
