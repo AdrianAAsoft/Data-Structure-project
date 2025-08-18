@@ -8,7 +8,8 @@ async function api(path, opts={}) {
 
 async function refrescar() {
   const [ps, cs] = await Promise.all([api('/paradas'), api('/conexiones')]);
-  // paradas
+
+  // paradas pills
   const contP = document.getElementById('paradas');
   contP.innerHTML = '';
   ps.forEach(p => {
@@ -18,18 +19,32 @@ async function refrescar() {
     const x = document.createElement('button');
     x.textContent = ' ×';
     x.style.marginLeft = '6px';
-    x.onclick = async () => { await api('/eliminar_parada',{method:'POST',body:JSON.stringify({nombre:p})}); await refrescar(); }
+    x.onclick = async () => { 
+      await api('/eliminar_parada',{method:'POST',body:JSON.stringify({nombre:p})}); 
+      await refrescar(); 
+    };
     s.appendChild(x);
     contP.appendChild(s);
   });
 
-  const ori = document.getElementById('ori'), des = document.getElementById('des');
-  ori.innerHTML = ''; des.innerHTML = '';
+  // para que sea un combobox
+  const ori = document.getElementById('ori'),
+        des = document.getElementById('des'),
+        cxa = document.getElementById('cx-a'),
+        cxb = document.getElementById('cx-b');
+
+  [ori, des, cxa, cxb].forEach(sel => sel.innerHTML = '');
+
   ps.forEach(p => {
-    const o = document.createElement('option'); o.value = p; o.textContent = p; ori.appendChild(o);
-    const d = document.createElement('option'); d.value = p; d.textContent = p; des.appendChild(d);
+    [ori, des, cxa, cxb].forEach(sel => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      sel.appendChild(opt);
+    });
   });
 
+  // conexiones list
   const contC = document.getElementById('conexiones');
   contC.innerHTML = '';
   const ul = document.createElement('ul');
@@ -38,14 +53,27 @@ async function refrescar() {
     li.textContent = `${a} → ${b} (${t}m) `;
     const btn1 = document.createElement('button');
     btn1.textContent = 'Eliminar →';
-    btn1.onclick = async () => { await api('/eliminar_conexion',{method:'POST',body:JSON.stringify({a,b,bidir:false})}); await refrescar(); };
+    btn1.onclick = async () => { 
+      await api('/eliminar_conexion',{method:'POST',body:JSON.stringify({a,b,bidir:false})}); 
+      await refrescar(); 
+    };
     const btn2 = document.createElement('button');
     btn2.textContent = 'Eliminar ↔';
     btn2.style.marginLeft='6px';
-    btn2.onclick = async () => { await api('/eliminar_conexion',{method:'POST',body:JSON.stringify({a,b,bidir:true})}); await refrescar(); };
-    li.appendChild(btn1); li.appendChild(btn2); ul.appendChild(li);
+    btn2.onclick = async () => { 
+      await api('/eliminar_conexion',{method:'POST',body:JSON.stringify({a,b,bidir:true})}); 
+      await refrescar(); 
+    };
+    li.appendChild(btn1); 
+    li.appendChild(btn2); 
+    ul.appendChild(li);
   });
   contC.appendChild(ul);
+}
+
+async function LimpiarConexion(){
+  await api('/limpiarCo',{method:'POST'}); 
+  await refrescar(); 
 }
 
 async function agregarParada(){
@@ -57,15 +85,15 @@ async function agregarParada(){
 }
 
 async function agregarConexion(){
-  const a = document.getElementById('cx-a').value.trim();
-  const b = document.getElementById('cx-b').value.trim();
+  const a = document.getElementById('cx-a').value;
+  const b = document.getElementById('cx-b').value;
   const t = Number(document.getElementById('cx-t').value.trim());
   const bidir = document.getElementById('cx-bidir').checked;
   if (!a || !b || Number.isNaN(t)) return;
   try {
     await api('/agregar_conexion',{method:'POST',body:JSON.stringify({a,b,t,bidir})});
   } catch(e){ alert(e.message); }
-  ['cx-a','cx-b','cx-t'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cx-t').value='';
   await refrescar();
 }
 
@@ -84,13 +112,20 @@ async function calcularRuta(){
 
 async function guardar(){
   const msg = document.getElementById('persist-msg');
-  try { await api('/guardar',{method:'POST',body:JSON.stringify({ruta:'grafo.json'})}); msg.textContent='Guardado en grafo.json'; }
+  try { 
+    await api('/guardar',{method:'POST',body:JSON.stringify({ruta:'grafo.json'})}); 
+    msg.textContent='Guardado en grafo.json'; 
+  }
   catch(e){ msg.textContent='Error al guardar: '+e.message; }
 }
 
 async function cargar(){
   const msg = document.getElementById('persist-msg');
-  try { await api('/cargar',{method:'POST',body:JSON.stringify({ruta:'grafo.json'})}); msg.textContent='Cargado desde grafo.json'; await refrescar(); }
+  try { 
+    await api('/cargar',{method:'POST',body:JSON.stringify({ruta:'grafo.json'})}); 
+    msg.textContent='Cargado desde grafo.json'; 
+    await refrescar(); 
+  }
   catch(e){ msg.textContent='Error al cargar: '+e.message; }
 }
 

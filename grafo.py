@@ -14,6 +14,10 @@ class Grafo:
             self.adj[nom] = {}
         return nom
 
+    def limpiar_conexiones(self):
+        for k in self.adj.keys():
+            self.adj[k] = {}  # remove all connections for each node
+
     def elimina_parada(self, nom):
         nom = nom.strip().lower()
         if nom in self.adj:

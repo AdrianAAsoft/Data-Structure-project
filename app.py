@@ -19,6 +19,15 @@ def conexiones():
     # arcos dirigidos (a -> b)
     return jsonify(g.arcos())
 
+@app.route("/limpiarCo", methods=["POST"])
+def limpiarC():
+    try:
+        g.limpiar_conexiones()
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+    return jsonify({"ok": True})
+
+
 # -------- Mutaciones --------
 @app.route("/agregar_parada", methods=["POST"])
 def agregar_parada():

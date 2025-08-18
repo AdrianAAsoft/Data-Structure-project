@@ -5,15 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Rutas de Bus (Demo)</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}
-    h1{margin:.2rem 0 1rem}
-    .wrap{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-    .card{border:1px solid #ddd;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-    input,select,button{padding:8px;border-radius:8px;border:1px solid #ccc}
-    .pill{background:#f4f4f4;border-radius:20px;padding:4px 10px;margin:2px;display:inline-block}
-    .muted{color:#666}
-    .ok{color:#0a7;font-weight:700}
-    .err{color:#b00;font-weight:700}
+    body {
+      font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 16px 0;
+      color: #ffffff;
+    }
+
+    p {
+      text-align: center;
+      margin: 16px 0;
+      color: #ffffff;
+    }
+    .wrap {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    input, select, button {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #2c2c2c;
+      color: #e0e0e0;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #fff;
+    }
+
+    button {
+      background: #fff;
+      border: none;
+      color: #121212;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #fff;
+    }
+
+    .pill {
+      background: #2c2c2c;
+      border-radius: 20px;
+      padding: 4px 10px;
+      margin: 2px;
+      display: inline-block;
+      color: #e0e0e0;
+    }
+
+    .muted { color: #999; }
+    .ok { color: #4caf50; font-weight: 700; }
+    .err { color: #f44336; font-weight: 700; }
+
+    select {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #2c2c2c;
+      color: #e0e0e0;
+      font-size: 14px;
+      appearance: none;              /* remove default arrow */
+      -webkit-appearance: none;      /* Safari/Chrome */
+      -moz-appearance: none;         /* Firefox */
+      background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px 16px;
+      padding-right: 32px; /* space for the arrow */
+    }
   </style>
 </head>
 <body>
@@ -34,11 +112,12 @@
       <h3>Conexiones (dirigidas)</h3>
       <div id="conexiones"></div>
       <div style="margin-top:8px;display:grid;gap:8px;grid-template-columns:1fr 1fr">
-        <input id="cx-a" placeholder="A"/>
-        <input id="cx-b" placeholder="B"/>
-        <input id="cx-t" placeholder="Tiempo (min)" type="number"/>
-        <label><input id="cx-bidir" type="checkbox" checked/> Bidireccional</label>
+        <select id="cx-a"></select>
+        <select id="cx-b"></select>
+        <input id="cx-t" type="number" placeholder="Tiempo (min)"/>
+        <label><input type="checkbox" id="cx-bidir"/> Bidireccional</label>
         <button onclick="agregarConexion()">Agregar conexión</button>
+        <button onclick="LimpiarConexion()">Eliminar conexiones</button>
       </div>
     </div>
 
