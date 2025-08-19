@@ -16,7 +16,7 @@ class Grafo:
 
     def limpiar_conexiones(self):
         for k in self.adj.keys():
-            self.adj[k] = {}  # remove all connections for each node
+            self.adj[k] = {}  # limpia todos lodas las conexiones
 
     def elimina_parada(self, nom):
         nom = nom.strip().lower()
@@ -159,3 +159,4 @@ def crea_demo():
     g.conecta("supermercado", "escuela", 15)
     g.conecta("mall", "universidad", 20, bidir=False)
     return g
+
