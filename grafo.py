@@ -4,10 +4,8 @@ import json
 
 class Grafo:
     def __init__(self):
-        # adj[a][b] = tiempo en min de a -> b
         self.adj = defaultdict(dict)
 
-    # ---- Nodos ----
     def agrega_parada(self, nom):
         nom = nom.strip().lower()
         if nom and nom not in self.adj:
@@ -16,7 +14,7 @@ class Grafo:
 
     def limpiar_conexiones(self):
         for k in self.adj.keys():
-            self.adj[k] = {}  # limpia todos lodas las conexiones
+            self.adj[k] = {}
 
     def elimina_parada(self, nom):
         nom = nom.strip().lower()
@@ -30,7 +28,6 @@ class Grafo:
     def paradas(self):
         return sorted(self.adj.keys())
 
-    # ---- Arcos (posible dirigido) ----
     def conecta(self, a, b, tiem, bidir=True):
         a, b = a.strip().lower(), b.strip().lower()
         if a not in self.adj:
@@ -56,8 +53,7 @@ class Grafo:
         return sorted(lista)
 
     def conexiones(self):
-        lista = []
-        vistos = set()
+        lista, vistos = [], set()
         for a in self.adj:
             for b, t in self.adj[a].items():
                 clave = tuple(sorted([a, b]))
@@ -66,19 +62,14 @@ class Grafo:
                     vistos.add(clave)
         return sorted(lista)
 
-    # ---- Camino mas corto ----
     def dijkstra(self, ori, des):
         ori, des = ori.strip().lower(), des.strip().lower()
         if ori not in self.adj or des not in self.adj:
             return None, []
-
         dist = {n: float('inf') for n in self.adj}
         prev = {n: None for n in self.adj}
         dist[ori] = 0
-
-        pq = []
-        heappush(pq, (0, ori))
-
+        pq = [(0, ori)]
         while pq:
             d, u = heappop(pq)
             if d > dist[u]:
@@ -91,24 +82,25 @@ class Grafo:
                     dist[v] = nd
                     prev[v] = u
                     heappush(pq, (nd, v))
-
         if dist[des] == float('inf'):
             return None, []
-
-        cam = []
-        cur = des
+        cam, cur = [], des
         while cur is not None:
             cam.append(cur)
             cur = prev[cur]
         cam.reverse()
         return dist[des], cam
 
-    # ---- IO JSON ----
     def a_dict(self):
-        return {
-            "nodos": sorted(self.adj.keys()),
-            "arcos": [{"a": a, "b": b, "t": int(t)} for a, b, t in self.arcos()],
-        }
+        lista, vistos = [], set()
+        for a in self.adj:
+            for b, t in self.adj[a].items():
+                clave = tuple(sorted([a, b]))
+                if clave not in vistos:
+                    bidir = b in self.adj and a in self.adj[b] and self.adj[b][a] == t
+                    lista.append({"a": a, "b": b, "t": int(t), "bidir": bidir})
+                    vistos.add(clave)
+        return {"nodos": sorted(self.adj.keys()), "arcos": lista}
 
     def desde_dict(self, data):
         self.adj.clear()
@@ -116,8 +108,9 @@ class Grafo:
             self.agrega_parada(n)
         for arco in data.get("arcos", []):
             a = arco.get("a", ""); b = arco.get("b", ""); t = arco.get("t", 0)
+            bidir = arco.get("bidir", False)
             if a and b:
-                self.conecta(a, b, int(t), bidir=False)
+                self.conecta(a, b, int(t), bidir=bidir)
 
     def guardar_json(self, ruta):
         try:
@@ -137,14 +130,12 @@ class Grafo:
             return False, str(e)
 
     def muestra(self):
-        print("Grafo (lista de adyacencia):")
+        print("Grafo:")
         for a in sorted(self.adj.keys()):
             vecinos = ", ".join(f"{b}({t}m)" for b, t in sorted(self.adj[a].items()))
             print(f"  {a} -> {vecinos}")
         print("")
 
-
-# ---- Demo base ----
 def crea_demo():
     g = Grafo()
     base = ["universidad", "supermercado", "hospital", "mall", "escuela"]
@@ -159,4 +150,5 @@ def crea_demo():
     g.conecta("supermercado", "escuela", 15)
     g.conecta("mall", "universidad", 20, bidir=False)
     return g
+
 
